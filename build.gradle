@@ -52,6 +52,7 @@ apply plugin: 'idea'
 
 jar {
     enabled = true
+    baseName = "${rootProject.name}"
 }
 
 dependencies {

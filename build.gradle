@@ -1,0 +1,90 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.7'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+ext.versions = [
+		commonsLang         : "3.12.0",
+		lombok              : "1.18.24",
+		modelmapper         : "3.1.0",
+		spring              : "2.5.7",
+		commonsIO           : "2.11.0",
+		commonsCSV          : "1.5",
+		slf4jApi            : "1.7.25",
+		slf4jTest           : "1.2.0",
+		logback             : "1.1.11",
+		logstash            : "1.11.0",
+		swagger             : "2.9.2",
+		swaggerAnnotations  : "1.5.21",
+		assertj             : "3.11.1",
+		junit               : "4.13.2",
+		equalsVerifier      : "3.0.2",
+		flyway              : "8.5.12",
+		mysqlConnector      : "8.0.11",
+		h2                  : "1.4.194",
+		jjwt                : "0.9.1",
+		zjsonpatch          : "0.4.6",
+		httpclient          : "4.5.6",
+		mockito             : "2.23.0",
+		sendinblue          : "3.0.1",
+		amazonaws           : "1.9.2",
+		itextpdf            : "5.5.13",
+		jdom2               : "2.0.6"
+]
+
+group = 'com.rpdpymnt'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+configurations {
+	slf4jTestLib
+	logbackClassicLib
+}
+
+dependencies {
+	compileOnly "org.projectlombok:lombok:${versions.lombok}"
+
+	annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation "org.slf4j:slf4j-api:${versions.slf4jApi}"
+	implementation "biz.paluch.logging:logstash-gelf:${versions.logstash}"
+	implementation "com.itextpdf:itextpdf:${versions.itextpdf}"
+
+	testImplementation "org.projectlombok:lombok:${versions.lombok}"
+	testImplementation "junit:junit:${versions.junit}"
+	testImplementation "org.mockito:mockito-core:${versions.mockito}"
+	testImplementation "org.assertj:assertj-core:${versions.assertj}"
+	testImplementation "nl.jqno.equalsverifier:equalsverifier:${versions.equalsVerifier}"
+
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation "org.springframework.boot:spring-boot-starter-cache:${versions.spring}"
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa:${versions.spring}"
+	implementation "org.springframework.boot:spring-boot-starter-actuator:${versions.spring}"
+	implementation "org.springframework.boot:spring-boot-starter-security:${versions.spring}"
+	implementation "org.springframework.boot:spring-boot-starter-validation:${versions.spring}"
+	implementation 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.modelmapper:modelmapper:3.1.0'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+	implementation "commons-io:commons-io:${versions.commonsIO}"
+	implementation "io.jsonwebtoken:jjwt:${versions.jjwt}"
+	implementation "org.jdom:jdom2:${versions.jdom2}"
+	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '3.9'
+	implementation 'com.h2database:h2:2.1.214'
+	implementation "org.flywaydb:flyway-core:${versions.flyway}"
+
+	testImplementation 'ch.qos.logback:logback-classic:1.2.11'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.apache.httpcomponents:httpclient:${versions.httpclient}"
+	testImplementation "com.h2database:h2:2.1.212"
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

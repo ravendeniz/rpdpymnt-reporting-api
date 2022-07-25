@@ -60,7 +60,7 @@ public class TransactionController extends BaseController {
     @ApiResponses({@ApiResponse(code = SC_OK, message = SUCCESSFUL_OPERATION),
             @ApiResponse(code = SC_BAD_REQUEST, message = INVALID_PARAMETERS)})
     @PostMapping(value = "/transaction", produces = JSON)
-    public ResponseEntity<?> transaction(
+    public ResponseEntity<TransactionResponse> transaction(
             @RequestBody TransactionRequest transactionRequest) {
         TransactionResponse transactionResponse = transactionService.getTransaction(transactionRequest);
         return ResponseEntity.ok(transactionResponse);

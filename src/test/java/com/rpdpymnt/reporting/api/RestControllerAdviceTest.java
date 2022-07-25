@@ -2,7 +2,6 @@ package com.rpdpymnt.reporting.api;
 
 import com.rpdpymnt.reporting.dto.ErrorDetails;
 import com.rpdpymnt.reporting.exception.InvalidParameterException;
-import com.rpdpymnt.reporting.util.ErrorDto;
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,19 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -140,50 +130,6 @@ public class RestControllerAdviceTest {
         softly.assertThat(responseEntity.getStatusCode()).isEqualTo(UNAUTHORIZED);
         softly.assertThat(responseEntity.getBody().getCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         softly.assertThat(responseEntity.getBody().getMessage()).startsWith(ERROR_MESSAGE);
-    }
-
-    @Test
-    public void givenExceptionWhenHandleArgumentExceptionThenReturnBadRequest() throws Exception {
-        // Arrange
-        MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
-        BindingResult binding = mock(BindingResult.class);
-        ObjectError error = mock(ObjectError.class);
-        when(error.getDefaultMessage()).thenReturn("Error Message");
-        when(exception.getBindingResult()).thenReturn(binding);
-        when(binding.getAllErrors()).thenReturn(Collections.singletonList(error));
-
-        // Act
-        ResponseEntity<ErrorDto> response = advice.handleArgumentException(exception);
-
-        // Assert
-        softly.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        softly.assertThat(response.getBody().getMessage()).startsWith("Validation failed");
-    }
-
-    @Test
-    public void givenExceptionWithFieldErrorsWhenHandleArgumentExceptionThenReturnBadRequest() throws Exception {
-        // Arrange
-        FieldError firstFieldError = new FieldError(FIRST_FIELD, FIRST_FIELD, FIRST_FIELD_MESSAGE);
-        FieldError secondFieldError = new FieldError(SECOND_FIELD, SECOND_FIELD, SECOND_FIELD_MESSAGE);
-        List<FieldError> fieldErrorList = new ArrayList<>();
-        fieldErrorList.add(firstFieldError);
-        fieldErrorList.add(secondFieldError);
-        MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
-        BindingResult binding = mock(BindingResult.class);
-        when(exception.getBindingResult()).thenReturn(binding);
-        when(binding.getFieldErrors()).thenReturn(fieldErrorList);
-
-        // Act
-        ResponseEntity<ErrorDto> response = advice.handleArgumentException(exception);
-
-        // Assert
-        softly.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        softly.assertThat(response.getBody().getMessage()).startsWith("Validation failed");
-        softly.assertThat(response.getBody().getValidationErrors().size()).isEqualTo(fieldErrorList.size());
-        softly.assertThat(response.getBody().getValidationErrors().get(0).getField()).isEqualTo(FIRST_FIELD);
-        softly.assertThat(response.getBody().getValidationErrors().get(0).getMessage()).isEqualTo(FIRST_FIELD_MESSAGE);
-        softly.assertThat(response.getBody().getValidationErrors().get(1).getField()).isEqualTo(SECOND_FIELD);
-        softly.assertThat(response.getBody().getValidationErrors().get(1).getMessage()).isEqualTo(SECOND_FIELD_MESSAGE);
     }
 
     @Test

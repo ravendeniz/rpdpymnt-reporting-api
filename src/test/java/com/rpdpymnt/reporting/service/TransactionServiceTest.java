@@ -2,7 +2,9 @@ package com.rpdpymnt.reporting.service;
 
 import com.rpdpymnt.reporting.dto.ReportRequest;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -11,8 +13,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 public class TransactionServiceTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     ExternalTokenService externalTokenService;
@@ -33,6 +40,8 @@ public class TransactionServiceTest {
         reportRequest.setToDate(LocalDate.parse("2015-07-01"));
         reportRequest.setAcquirer(1);
         reportRequest.setMerchant(1);
+        when(externalTokenService.getExternalToken()).thenReturn("TOKEN");
+        thrown.expect(SecurityException.class);
         transactionService.getReport(reportRequest);
     }
 }

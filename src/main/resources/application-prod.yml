@@ -8,8 +8,6 @@ spring:
       ddl-auto: none
   mvc:
     pathmatch.matching-strategy: ANT_PATH_MATCHER
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE}
   application:
     name: "Rpdpymnt Reporting"
   jackson:

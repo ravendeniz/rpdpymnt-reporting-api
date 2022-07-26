@@ -10,6 +10,5 @@ import lombok.Value;
 public class ErrorDetails {
 
     private int code;
-
     private String message;
 }

@@ -5,7 +5,7 @@ LABEL maintainer="cs.denizkarakaya@gmail.com"
 
 WORKDIR /opt/fujibas-server/
 
-COPY build/libs/server-*.jar reporting-0.0.1-SNAPSHOT.jar
+COPY build/libs/reporting-*.jar reporting-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8080
 

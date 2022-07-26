@@ -41,18 +41,9 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    slf4jTestLib
-    logbackClassicLib
-}
-
-apply plugin: 'groovy'
-apply plugin: 'java'
-apply plugin: 'idea'
-
-jar {
-    enabled = true
-    baseName = "${rootProject.name}"
+jar{
+    archiveClassifier=''
+    enabled = false
 }
 
 dependencies {
@@ -95,10 +86,5 @@ dependencies {
 }
 
 test {
-    classpath -= configurations.logbackClassicLib
-    classpath += configurations.slf4jTestLib
-}
-
-def getSafeProperty(project, key, defaultValue) {
-	return project.findProperty(key) ?: defaultValue
+    useJUnitPlatform()
 }

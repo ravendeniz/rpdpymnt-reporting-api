@@ -3,49 +3,70 @@ package com.rpdpymnt.reporting.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rpdpymnt.reporting.dto.TransactionRequest;
 import com.rpdpymnt.reporting.dto.TransactionResponse;
+import com.rpdpymnt.reporting.repository.UserProfileRepository;
 import com.rpdpymnt.reporting.service.TransactionService;
 import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Before;
 import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.http.ResponseEntity;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WebMvcTest(TransactionController.class)
 public class TransactionControllerUnitTest {
 
     @Rule
     public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
     TransactionService transactionService;
 
-    @InjectMocks
-    TransactionController controller;
+    @MockBean
+    UserProfileRepository userProfileRepository;
+
+    @MockBean
+    RestTemplateBuilder restTemplateBuilder;
+
+    @MockBean
+    RestTemplate restTemplate;
 
     private TransactionResponse transactionResponse;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        transactionResponse = objectMapper.readValue(new File("TransactionResponse.json"),
-                TransactionResponse.class);
+        File file = new File("src/test/resources/TransactionResponse.json");
+        transactionResponse = objectMapper.readValue(file, TransactionResponse.class);
     }
 
     @Test
-    void givenTransactionRequestWhenTransactionThenRerultTransactionResponse() {
-        final TransactionRequest transactionRequest = new TransactionRequest();
+    void givenTransactionRequestWhenTransactionThenResultOk() throws Exception {
+        TransactionRequest transactionRequest = new TransactionRequest();
         transactionRequest.setTransactionId("1-1444392550-1");
 
-        when(transactionService.getTransaction(transactionRequest)).thenReturn(transactionResponse);
+        Mockito.when(transactionService.getTransaction(transactionRequest)).thenReturn(transactionResponse);
+        String url = "/api/transaction";
 
-        ResponseEntity<TransactionResponse> result = controller.transaction(transactionRequest);
-
-        softly.assertThat(result.getBody().getMerchant().getName()).isEqualTo("Dev-Merchant");
+        MvcResult mvcResult = mockMvc.perform(post(url).content(objectMapper.writeValueAsString(transactionRequest))
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
     }
 }

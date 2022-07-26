@@ -3,12 +3,12 @@ package com.rpdpymnt.reporting.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SuppressWarnings("PMD.TooManyFields")
+@EqualsAndHashCode(callSuper=false)
 public class UserProfile extends AbstractEntity implements Serializable {
 
     public static final long serialVersionUID = -8685507339034942104L;

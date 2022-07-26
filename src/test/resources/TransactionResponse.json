@@ -45,7 +45,7 @@
     "shippingFax": null
   },
   "merchant": {
-    " name": "Dev-Merchant"
+    "name": "Dev-Merchant"
   },
   "transaction": {
     "merchant": {

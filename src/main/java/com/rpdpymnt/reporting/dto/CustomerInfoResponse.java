@@ -1,5 +1,9 @@
 package com.rpdpymnt.reporting.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +18,17 @@ import java.time.LocalDateTime;
 public class CustomerInfoResponse {
 
     private long id;
-    private LocalDateTime created_at;
+    @JsonProperty("created_at")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime createdAt;
+    @JsonProperty("updated_at")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime updated_at;
+    @JsonProperty("deleted_at")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime deleted_at;
     private String number;
     private String expiryMonth;
@@ -24,6 +37,8 @@ public class CustomerInfoResponse {
     private String startYear;
     private long issueNumber;
     private String email;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime birthday;
     private String gender;
     private String billingTitle;

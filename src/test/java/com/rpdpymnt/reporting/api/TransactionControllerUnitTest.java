@@ -1,6 +1,10 @@
 package com.rpdpymnt.reporting.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rpdpymnt.reporting.dto.ReportRequest;
+import com.rpdpymnt.reporting.dto.ReportResponse;
+import com.rpdpymnt.reporting.dto.TransactionListRequest;
+import com.rpdpymnt.reporting.dto.TransactionListResponse;
 import com.rpdpymnt.reporting.dto.TransactionRequest;
 import com.rpdpymnt.reporting.dto.TransactionResponse;
 import com.rpdpymnt.reporting.repository.UserProfileRepository;
@@ -21,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,12 +55,47 @@ public class TransactionControllerUnitTest {
     RestTemplate restTemplate;
 
     private TransactionResponse transactionResponse;
+    private TransactionListResponse transactionListResponse;
+    private ReportResponse reportResponse;
 
     @BeforeEach
     public void setUp() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         File file = new File("src/test/resources/TransactionResponse.json");
         transactionResponse = objectMapper.readValue(file, TransactionResponse.class);
+        file = new File("src/test/resources/TransactionListResponse.json");
+        transactionListResponse = objectMapper.readValue(file, TransactionListResponse.class);
+        file = new File("src/test/resources/ReportResponse.json");
+        reportResponse = objectMapper.readValue(file, ReportResponse.class);
+    }
+
+    @Test
+    void ReportRequestRequestWhenTransactionsReportThenResultOk() throws Exception {
+        ReportRequest reportRequest = new ReportRequest();
+        reportRequest.setFromDate(LocalDate.parse("2015-07-01"));
+        reportRequest.setToDate(LocalDate.parse("2015-10-01"));
+        reportRequest.setMerchant(1);
+        reportRequest.setAcquirer(1);
+
+        Mockito.when(transactionService.getReport(reportRequest)).thenReturn(reportResponse);
+        String url = "/api/transactions/report";
+
+        MvcResult mvcResult = mockMvc.perform(post(url).content(objectMapper.writeValueAsString(reportRequest))
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+    }
+
+    @Test
+    void givenTransactionListRequestWhenTransactionListThenResultOk() throws Exception {
+        TransactionListRequest transactionListRequest = new TransactionListRequest();
+        transactionListRequest.setStatus("DECLINED");
+        transactionListRequest.setOperation("3D");
+        transactionListRequest.setErrorCode("Invalid Transaction");
+
+        Mockito.when(transactionService.getTransactionList(transactionListRequest)).thenReturn(transactionListResponse);
+        String url = "/api/transaction/list";
+
+        MvcResult mvcResult = mockMvc.perform(post(url).content(objectMapper.writeValueAsString(transactionListRequest))
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
     }
 
     @Test
